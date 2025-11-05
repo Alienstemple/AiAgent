@@ -8,9 +8,13 @@ import ai.koog.agents.core.tools.annotations.Tool
 import ai.koog.agents.core.tools.reflect.ToolSet
 import ai.koog.agents.ext.agent.singleRunStrategy
 import ai.koog.agents.local.features.eventHandler.feature.handleEvents
+import ai.koog.prompt.dsl.Prompt
 import ai.koog.prompt.dsl.prompt
-import ai.koog.prompt.executor.clients.anthropic.AnthropicModels
-import ai.koog.prompt.executor.llms.all.simpleAnthropicExecutor
+import ai.koog.prompt.executor.clients.deepseek.DeepSeekLLMClient
+import ai.koog.prompt.executor.clients.openai.OpenAIModels
+import ai.koog.prompt.executor.clients.deepseek.DeepSeekModels
+import ai.koog.prompt.executor.llms.all.simpleOpenAIExecutor
+import ai.koog.prompt.llm.LLModel
 import android.annotation.SuppressLint
 import io.github.cdimascio.dotenv.Dotenv
 import io.ktor.client.HttpClient
@@ -24,6 +28,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.URLBuilder
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -156,55 +161,26 @@ class WebSearchTools(
 }
 //endregion
 
-suspend fun main() {
-    // Load from the resources folder, custom filename
-    val dotenv = Dotenv.configure()
-        .directory("./src/main/resources")
-        .filename("API_KEY.env")
-        .load()
+fun main() {
 
-    val anthropicApiKey =
-        dotenv["ANTHROPIC_API_KEY"] ?: System.getenv("ANTHROPIC_API_KEY")
-        ?: error("ANTHROPIC_API_KEY is not set in .env or environment")
+    val deepseekApiKey = "sk-dcab13bf16de4632a4bdc7e158e1bcbe"
 
-    val brightDataKey =
-        dotenv["BRIGHT_DATA_KEY"] ?: System.getenv("BRIGHT_DATA_KEY")
-        ?: error("BRIGHT_DATA_KEY is not set in .env or environment")
-
-    val agentConfig = AIAgentConfig(
-        prompt =
-            prompt("web_search_prompt") {
-                system("You are a helpful assistant that helps users to find information on the internet.")
-            },
-        model = AnthropicModels.Sonnet_4,
-        maxAgentIterations = 30,
+    val deepseekClient = DeepSeekLLMClient(
+        apiKey = deepseekApiKey,
     )
 
-    //region Tool registry
-    val webSearchTools = WebSearchTools(brightDataKey)
+    val basePrompt = prompt("base-prompt") {
+        system("Ты — полезный русскоязычный ассистент. Отвечай кратко и по делу.")
+    }
 
-    val toolRegistry =
-        ToolRegistry {
-            tools(webSearchTools)
-        }
+    val request = prompt(basePrompt) {
+        user("Сгенерируй одно краткое приветствие пользователю")
+    }
 
-
-    val agent =
-        AIAgent<String,String>(
-            promptExecutor = simpleAnthropicExecutor(anthropicApiKey),
-            strategy = singleRunStrategy(),
-            toolRegistry = toolRegistry,
-            agentConfig = agentConfig,
-        ) {
-            handleEvents {
-                onToolCall { ctx ->
-                    println("Tool called: tool ${ctx.tool.name}, args ${ctx.toolArgs}")
-                }
-            }
-        }
-
-    val result = agent.run("Who is the president of the United States as of today?, tell me as well from which website you scraped the information")
-    println(result)
+    runBlocking {
+        val response = deepseekClient.execute(prompt = request, model = DeepSeekModels.DeepSeekChat)
+        println(response) // Полученный ответ от модели
+    }
 }
 
 

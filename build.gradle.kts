@@ -4,3 +4,10 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
 }
+
+//allprojects {
+//    tasks.withType<JavaCompile>().configureEach {
+//        sourceCompatibility = "17"
+//        targetCompatibility = "17"
+//    }
+//}
