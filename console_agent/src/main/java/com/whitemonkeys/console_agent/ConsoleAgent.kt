@@ -14,7 +14,7 @@ data class LlmGreetingResponse(
 
 fun main() {
 
-    val deepseekApiKey = "sk-dcab13bf16de4632a4bdc7e158e1bcbe"
+    val deepseekApiKey = "sk-309a7547d3eb4bb79bb0cdcd226da183"
 
     val deepseekClient = DeepSeekLLMClient(
         apiKey = deepseekApiKey,
