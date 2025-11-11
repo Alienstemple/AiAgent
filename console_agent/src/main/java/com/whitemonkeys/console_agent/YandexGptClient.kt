@@ -14,6 +14,37 @@ import java.util.*
 import java.io.File
 import java.io.FileInputStream
 
+/**
+ * Функция для чтения многострочного ввода из консоли.
+ * Пользователь вводит строки, завершение ввода - пустая строка или команда .end
+ * @return Собранный текст или null, если введена команда .exit
+ */
+fun readMultilineInput(scanner: Scanner): String? {
+    val lines = mutableListOf<String>()
+    
+    while (true) {
+        if (!scanner.hasNextLine()) {
+            return if (lines.isEmpty()) null else lines.joinToString("\n")
+        }
+        
+        val line = scanner.nextLine()
+        
+        // Проверяем команды выхода
+        if (line == ".exit") {
+            return ".exit"
+        }
+        
+        // Пустая строка или команда .end завершают ввод
+        if (line.isBlank() || line == ".end") {
+            break
+        }
+        
+        lines.add(line)
+    }
+    
+    return if (lines.isEmpty()) "" else lines.joinToString("\n")
+}
+
 fun main() = runBlocking {
     // Загружаем секреты из файла
     val secretsFile = File("console_agent/secrets.properties")
@@ -37,14 +68,16 @@ fun main() = runBlocking {
 
     val scanner = Scanner(System.`in`)
     println("=== Консольный чат-бот с Yandex GPT ===")
-    println("Введите ваше сообщение (или '.exit' для выхода):")
+    println("Введите ваше сообщение (многострочный ввод поддерживается).")
+    println("Для завершения ввода введите пустую строку или '.end'")
+    println("Для выхода введите '.exit'")
 
     while (true) {
         print("Вы: ")
-        val userInput = scanner.nextLine()
+        val userInput = readMultilineInput(scanner)
 
         // Условие выхода из цикла
-        if (userInput == ".exit") {
+        if (userInput == null || userInput == ".exit") {
             println("До свидания!")
             break
         }
@@ -85,8 +118,8 @@ class YandexGptClient(
         val request = YandexGptRequest(
             modelUri = modelUri,
             completionOptions = YandexGptRequest.CompletionOptions(
-                temperature = 0.5,
-                maxTokens = 1000
+                temperature = 0.7,
+                maxTokens = 3000
             ),
             messages = listOf(
                 YandexGptRequest.Message(
