@@ -13,6 +13,7 @@ import kotlinx.coroutines.runBlocking
 import java.util.*
 import java.io.File
 import java.io.FileInputStream
+import kotlin.system.measureTimeMillis
 
 /**
  * Функция для чтения многострочного ввода из консоли.
@@ -129,12 +130,17 @@ class YandexGptClient(
             )
         )
 
-        // Отправляем POST-запрос
-        val response: YandexGptResponse = client.post("https://llm.api.cloud.yandex.net/foundationModels/v1/completion") {
-            header("Authorization", "Api-Key $apiKey")
-            header("Content-Type", "application/json")
-            setBody(request)
-        }.body()
+        lateinit var response: YandexGptResponse
+        val latencyMs = measureTimeMillis {
+            // Отправляем POST-запрос
+            response =
+                client.post("https://llm.api.cloud.yandex.net/foundationModels/v1/completion") {
+                    header("Authorization", "Api-Key $apiKey")
+                    header("Content-Type", "application/json")
+                    setBody(request)
+                }.body()
+        }
+        println("Latency: $latencyMs, tokens: ${response.result.usage}")
 
         // Извлекаем и возвращаем текст ответа
         return response.result.alternatives.first().message.text
