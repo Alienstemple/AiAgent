@@ -110,10 +110,41 @@ class YandexGptClient(
         }
     }
 
+    private val modelUri = "gpt://$folderId/yandexgpt-lite"
+
+    private val chatContext = ChatContext(summarizer = { messages ->
+        val promptText = messages.joinToString("\n") { "${it.role}: ${it.content}" }
+        val summaryPrompt = "Сделай краткое резюме следующего диалога, сохранив ключевые детали:\n$promptText"
+
+        val request = YandexGptRequest(
+            modelUri = modelUri,
+            completionOptions = YandexGptRequest.CompletionOptions(
+                temperature = 0.7,
+                maxTokens = 3000
+            ),
+            messages = listOf(
+                YandexGptRequest.Message(role = "system", text = summaryPrompt)
+            )
+        )
+        val response =
+            client.post("https://llm.api.cloud.yandex.net/foundationModels/v1/completion") {
+                header("Authorization", "Api-Key $apiKey")
+                header("Content-Type", "application/json")
+                setBody(request)
+            }.body<String>()
+
+        response
+    })
+
     // Функция для отправки сообщения и получения ответа
     suspend fun sendMessage(userMessage: String): String {
-        // Формируем полный URI модели, включая folderId
-        val modelUri = "gpt://$folderId/yandexgpt-lite"
+
+        // Пополняем контекст и передаем его в gpt
+        chatContext.addMessage("user", userMessage)
+        val fullContext = chatContext.getFullContext()
+        val messages = fullContext.map { msg ->
+            YandexGptRequest.Message(role = msg.role, text = msg.content)
+        }
 
         // Создаем запрос
         val request = YandexGptRequest(
@@ -122,12 +153,7 @@ class YandexGptClient(
                 temperature = 0.7,
                 maxTokens = 3000
             ),
-            messages = listOf(
-                YandexGptRequest.Message(
-                    role = "user",
-                    text = userMessage
-                )
-            )
+            messages = messages
         )
 
         lateinit var response: YandexGptResponse
