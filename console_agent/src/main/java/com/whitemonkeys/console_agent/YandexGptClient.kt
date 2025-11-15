@@ -168,8 +168,13 @@ class YandexGptClient(
         }
         println("Latency: $latencyMs, tokens: ${response.result.usage}")
 
-        // Извлекаем и возвращаем текст ответа
-        return response.result.alternatives.first().message.text
+        // Извлекаем текст ответа
+        val assistantResponse = response.result.alternatives.first().message.text
+        
+        // Добавляем ответ ассистента в контекст
+        chatContext.addMessage("assistant", assistantResponse)
+        
+        return assistantResponse
     }
 }
 
