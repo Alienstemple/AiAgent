@@ -51,44 +51,44 @@ inline fun <reified T> Json.encodeToJsonElement(value: T): JsonElement =
     encodeToJsonElement(serializersModule.serializer(), value)
 
 // Главная функция
-suspend fun main() {
-    val client = HttpClient {
-        install(ContentNegotiation) {
-            json(Json { ignoreUnknownKeys = true; isLenient = true })
-        }
-    }
-
-    val mcpUrl = "http://localhost:8080"
-
-    val request = JsonRpcRequest(
-        method = "mcp/listTools",
-        id = "list-tools-${System.currentTimeMillis()}"
-    )
-
-    try {
-        val response: JsonRpcResponse<JsonArray> = client.post(mcpUrl) {
-            contentType(ContentType.Application.Json)
-            setBody(request)
-        }.body()
-
-        if (response.error != null) {
-            println("❌ Ошибка MCP: [${response.error.code}] ${response.error.message}")
-            return
-        }
-
-        println("✅ Получено ${response.result?.size ?: 0} инструментов:")
-        response.result?.forEach { tool ->
-            if (tool is JsonObject) {
-                val name = tool["name"]?.jsonPrimitive?.content ?: "неизвестно"
-                val description = tool["description"]?.jsonPrimitive?.content ?: ""
-                println("- $name: $description")
-            }
-        }
-
-    } catch (e: Exception) {
-        println("💥 Ошибка подключения: ${e.message}")
-        e.printStackTrace()
-    } finally {
-        client.close()
-    }
-}
+//suspend fun main() {
+//    val client = HttpClient {
+//        install(ContentNegotiation) {
+//            json(Json { ignoreUnknownKeys = true; isLenient = true })
+//        }
+//    }
+//
+//    val mcpUrl = "http://localhost:8080"
+//
+//    val request = JsonRpcRequest(
+//        method = "mcp/listTools",
+//        id = "list-tools-${System.currentTimeMillis()}"
+//    )
+//
+//    try {
+//        val response: JsonRpcResponse<JsonArray> = client.post(mcpUrl) {
+//            contentType(ContentType.Application.Json)
+//            setBody(request)
+//        }.body()
+//
+//        if (response.error != null) {
+//            println("❌ Ошибка MCP: [${response.error.code}] ${response.error.message}")
+//            return
+//        }
+//
+//        println("✅ Получено ${response.result?.size ?: 0} инструментов:")
+//        response.result?.forEach { tool ->
+//            if (tool is JsonObject) {
+//                val name = tool["name"]?.jsonPrimitive?.content ?: "неизвестно"
+//                val description = tool["description"]?.jsonPrimitive?.content ?: ""
+//                println("- $name: $description")
+//            }
+//        }
+//
+//    } catch (e: Exception) {
+//        println("💥 Ошибка подключения: ${e.message}")
+//        e.printStackTrace()
+//    } finally {
+//        client.close()
+//    }
+//}

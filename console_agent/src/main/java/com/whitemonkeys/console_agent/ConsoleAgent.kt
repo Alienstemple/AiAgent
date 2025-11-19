@@ -12,42 +12,42 @@ data class LlmGreetingResponse(
     val greeting: String
 )
 
-fun main() {
-
-    val deepseekApiKey = "sk-309a7547d3eb4bb79bb0cdcd226da183"
-
-    val deepseekClient = DeepSeekLLMClient(
-        apiKey = deepseekApiKey,
-    )
-
-    val basePrompt = prompt("base-prompt") {
-        system("Ты — полезный русскоязычный ассистент. Отвечай кратко и по делу.")
-    }
-
-    val request = prompt(basePrompt) {
-        user("""
-        Сгенерируй одно краткое приветствие пользователю.
-        Ответ должен быть строго в формате JSON с полем "greeting", например: {"greeting": "Привет!"}
-    """.trimIndent())
-    }
-
-    runBlocking {
-        val response = deepseekClient.execute(prompt = request, model = DeepSeekModels.DeepSeekChat)
-        println(response) // Полученный ответ от модели
-        response.forEach { messageResponse ->
-            val cleanJson = messageResponse.content.trim()
-                .removePrefix("```json")
-                .removePrefix("```")
-                .removeSuffix("```")
-                .trim()
-
-            try {
-                val parsed = Json.decodeFromString<LlmGreetingResponse>(cleanJson)
-                println("Получено приветствие: ${parsed.greeting}")
-            } catch (e: Exception) {
-                println("Ошибка парсинга JSON: $e")
-                println("Сырой ответ: $response")
-            }
-        }
-    }
-}
+//fun main() {
+//
+//    val deepseekApiKey = "sk-309a7547d3eb4bb79bb0cdcd226da183"
+//
+//    val deepseekClient = DeepSeekLLMClient(
+//        apiKey = deepseekApiKey,
+//    )
+//
+//    val basePrompt = prompt("base-prompt") {
+//        system("Ты — полезный русскоязычный ассистент. Отвечай кратко и по делу.")
+//    }
+//
+//    val request = prompt(basePrompt) {
+//        user("""
+//        Сгенерируй одно краткое приветствие пользователю.
+//        Ответ должен быть строго в формате JSON с полем "greeting", например: {"greeting": "Привет!"}
+//    """.trimIndent())
+//    }
+//
+//    runBlocking {
+//        val response = deepseekClient.execute(prompt = request, model = DeepSeekModels.DeepSeekChat)
+//        println(response) // Полученный ответ от модели
+//        response.forEach { messageResponse ->
+//            val cleanJson = messageResponse.content.trim()
+//                .removePrefix("```json")
+//                .removePrefix("```")
+//                .removeSuffix("```")
+//                .trim()
+//
+//            try {
+//                val parsed = Json.decodeFromString<LlmGreetingResponse>(cleanJson)
+//                println("Получено приветствие: ${parsed.greeting}")
+//            } catch (e: Exception) {
+//                println("Ошибка парсинга JSON: $e")
+//                println("Сырой ответ: $response")
+//            }
+//        }
+//    }
+//}

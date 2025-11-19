@@ -15,7 +15,7 @@ kotlin {
 }
 
 application {
-    mainClass.set("com.whitemonkeys.console_agent.ConsoleAgentKt")
+    mainClass.set("com.whitemonkeys.mcp_server.McpServerKt")
 }
 
 dependencies {

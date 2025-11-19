@@ -14,6 +14,7 @@ ktor = "3.2.2"
 kotlinxSerialization = "1.6.3"
 dotenvKotlin = "6.4.1"
 jetbrainsKotlinJvm = "2.0.21"
+mcp = "0.7.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -37,6 +38,7 @@ ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-conte
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 dotenv-kotlin = { group = "io.github.cdimascio", name = "dotenv-kotlin", version.ref = "dotenvKotlin" }
+kotlin-mcp = { group = "io.modelcontextprotocol", name = "kotlin-sdk-server", version.ref = "mcp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

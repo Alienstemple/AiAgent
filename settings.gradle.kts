@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "AiAgentChallenge"
 include(":app")
 include(":console_agent")
+include(":mcp_server")
