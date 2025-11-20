@@ -151,23 +151,23 @@ suspend fun handleRequest(request: JsonRpcRequest): JsonRpcResponse {
     }
 }
 
-fun main() = runBlocking {
-    val json = kotlinx.serialization.json.Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-    }
-
-    while (true) {
-        val line = readlnOrNull() ?: break
-        if (line.isEmpty()) continue
-
-        try {
-            val request = json.decodeFromString<JsonRpcRequest>(line)
-            val response = handleRequest(request)
-            println(json.encodeToString(response))
-        } catch (e: Exception) {
-            // В случае ошибки парсинга просто игнорируем или логируем
-            System.err.println("Parse error: ${e.message}")
-        }
-    }
-}
+//fun main() = runBlocking {
+//    val json = kotlinx.serialization.json.Json {
+//        ignoreUnknownKeys = true
+//        isLenient = true
+//    }
+//
+//    while (true) {
+//        val line = readlnOrNull() ?: break
+//        if (line.isEmpty()) continue
+//
+//        try {
+//            val request = json.decodeFromString<JsonRpcRequest>(line)
+//            val response = handleRequest(request)
+//            println(json.encodeToString(response))
+//        } catch (e: Exception) {
+//            // В случае ошибки парсинга просто игнорируем или логируем
+//            System.err.println("Parse error: ${e.message}")
+//        }
+//    }
+//}
