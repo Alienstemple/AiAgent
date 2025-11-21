@@ -20,7 +20,6 @@ application {
 
 dependencies {
     implementation(libs.koog.agents)
-    implementation(libs.koog.core)
     implementation(libs.prompt.executor.deepseek.client)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)

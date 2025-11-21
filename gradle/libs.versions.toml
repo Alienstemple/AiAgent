@@ -32,7 +32,6 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 koog-agents = { group = "ai.koog", name = "koog-agents", version.ref = "koog" }
-koog-core = { group = "org.jetbrains.koog", name = "koog-core", version.ref = "koog" }
 prompt-executor-deepseek-client = { group = "ai.koog", name = "prompt-executor-deepseek-client", version.ref = "promptExecutorDeepseek" }
 ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
